@@ -1,23 +1,31 @@
 /* Copyright (c) 2011, Jon Maken
  * License: 3-clause BSD
- * Revision: 11/25/2011 10:25:59 PM
+ * Revision: 11/26/2011 12:07:41 PM
  */
 
-// TODO list:
+// TODO
 // * relook at `SetThreadAffinityMask` set/reset usage in `start` & `stop`
+// * verify default `Timer(Timer& src)` and `void operator=(Timer& src)`
+// * finish `print` impl
+// * impl global `ostream& operator<<(ostream& os, Timer& timer)`
+// * impl Linux hires timing support
 
 #ifndef HIRES_TIMER_H_
 #define HIRES_TIMER_H_
 
-#include <windows.h>
+#include <ostream>
 #include <stdexcept>
+
+#if defined(_WIN32)
+#  include <windows.h>
+#endif
 
 namespace HiRes {
 
 enum TimeUnits { s=1, ms=1000, us=1000000, ns=1000000000 };
 
 // Timer class template declaration
-template <TimeUnits tu>
+template <TimeUnits Units = HiRes::s>
 class Timer {
 public:
     Timer();
@@ -26,6 +34,7 @@ public:
     void start();
     double stop();
     double get_frequency();
+    void print(std::ostream& os);
 
 private:
     double frequency;
@@ -35,8 +44,8 @@ private:
 
 
 // Separate Timer class template definition for possible extraction to .cpp
-template<TimeUnits tu>
-Timer<tu>::Timer()
+template<TimeUnits Units>
+Timer<Units>::Timer()
 :   frequency(),
     start_count(),
     stop_count()
@@ -44,13 +53,35 @@ Timer<tu>::Timer()
     frequency = this->get_frequency();
 }
 
-template<TimeUnits tu>
-Timer<tu>::~Timer()
+template<TimeUnits Units>
+Timer<Units>::~Timer()
 {
 }
 
-template<TimeUnits tu>
-double Timer<tu>::get_frequency()
+template<TimeUnits Units>
+void Timer<Units>::start()
+{
+    DWORD_PTR prev_am = ::SetThreadAffinityMask(::GetCurrentThread(), 0);
+
+    ::QueryPerformanceCounter(&start_count);
+
+    ::SetThreadAffinityMask(::GetCurrentThread(), prev_am);
+}
+
+template<TimeUnits Units>
+double Timer<Units>::stop()
+{
+    DWORD_PTR prev_am= ::SetThreadAffinityMask(::GetCurrentThread(), 0);
+
+    ::QueryPerformanceCounter(&stop_count);
+
+    ::SetThreadAffinityMask(::GetCurrentThread(), prev_am);
+
+    return ((stop_count.QuadPart - start_count.QuadPart) / frequency * Units);
+}
+
+template<TimeUnits Units>
+double Timer<Units>::get_frequency()
 {
     LARGE_INTEGER freq;
 
@@ -61,26 +92,14 @@ double Timer<tu>::get_frequency()
     return freq.QuadPart;
 }
 
-template<TimeUnits tu>
-void Timer<tu>::start()
+template<TimeUnits Units>
+void Timer<Units>::print(std::ostream& os)
 {
-    DWORD_PTR prev_am = ::SetThreadAffinityMask(::GetCurrentThread(), 0);
-
-    ::QueryPerformanceCounter(&start_count);
-
-    ::SetThreadAffinityMask(::GetCurrentThread(), prev_am);
-}
-
-template<TimeUnits tu>
-double Timer<tu>::stop()
-{
-    DWORD_PTR prev_am= ::SetThreadAffinityMask(::GetCurrentThread(), 0);
-
-    ::QueryPerformanceCounter(&stop_count);
-
-    ::SetThreadAffinityMask(::GetCurrentThread(), prev_am);
-
-    return ((stop_count.QuadPart - start_count.QuadPart) / frequency * tu);
+    os  << "Timer<units: "
+        << "TODO" << ", "
+        << "freq: "
+        << frequency
+        << ">";
 }
 
 }  // namespace HiRes
