@@ -1,14 +1,15 @@
 /* Copyright (c) 2011, Jon Maken
  * License: 3-clause BSD
- * Revision: 11/25/2011 6:29:53 PM
+ * Revision: 11/26/2011 12:00:08 PM
  *
  * build recipes (Windows):
  *      cl /nologo /O2 /EHsc mem_alloc.cpp
  *      g++ -Wall -O3 -s -o mem_alloc.exe mem_alloc.cpp
  */
 
-// TODO list:
-// * check memory allocation return values
+// TODO
+// * throw runtime exceptions on memory allocation failures
+// * change to DLL to be called by runner exe
 
 #include <ios>
 #include <iostream>
@@ -16,7 +17,9 @@
 #include <iomanip>
 #include <stdexcept>
 
-#include <windows.h>
+#if defined (_WIN32)
+#  include <windows.h>
+#endif
 
 #include "hrtimer.h"
 
@@ -61,6 +64,7 @@ int main(int argc, char* argv[])
     free(static_cast<void*>(buf));
     buf = NULL;
 
+#if defined(_WIN32)
     // Win32 HeapAlloc()
     HANDLE heap = ::HeapCreate(0, 2*BUF_SIZE, 4*BUF_SIZE);
     if (heap == NULL) return(-1);
@@ -83,6 +87,7 @@ int main(int argc, char* argv[])
                 << "HeapFree() time: "
                 << rv << std::endl;
     ::HeapDestroy(heap);
+#endif
 
     return 0;
 }
