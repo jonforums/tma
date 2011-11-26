@@ -1,0 +1,11 @@
+## What??
+
+A helper for timing native Windows or Linux API calls.
+
+## Usage
+
+## License
+
+3-clause BSD. See project LICENSE file.
+
+## TODO
