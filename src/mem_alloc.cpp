@@ -24,14 +24,17 @@ const int BUF_SIZE = 32767;
 
 int main(int argc, char* argv[])
 {
+    wchar_t* buf = NULL;
+    double rv = 0.0;
+
     // hires timer returning usecond times
     HiRes::Timer<HiRes::us> t_us;
 
     // CRT malloc()
     t_us.start();
-    wchar_t *buf = static_cast<wchar_t*>(malloc(BUF_SIZE));
+    buf = static_cast<wchar_t*>(malloc(BUF_SIZE));
+    rv = t_us.stop();
     if (buf == NULL) return(-1);
-    double rv = t_us.stop();
     std::cout   << std::left
                 << std::setw(18)
                 << "malloc() time: "
@@ -64,6 +67,7 @@ int main(int argc, char* argv[])
     t_us.start();
     buf = static_cast<wchar_t*>(::HeapAlloc(heap, 0, BUF_SIZE));
     rv = t_us.stop();
+    if (buf == NULL) return(-1);
     std::cout   << std::left
                 << std::setw(18)
                 << "HeapAlloc() time: "
