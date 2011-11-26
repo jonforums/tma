@@ -9,3 +9,6 @@ A helper for timing native Windows or Linux API calls.
 3-clause BSD. See project LICENSE file.
 
 ## TODO
+
+* refactor into runner exe loading custom code timing DLLs from the cmd line
+* look into Linux's `clock_gettime`, `clock_getres`, `sysconf`, and `/proc/timer_list`
