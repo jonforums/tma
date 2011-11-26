@@ -1,0 +1,6 @@
+.lock-waf*
+waf*
+build/
+*.exe
+*.obj
+*.o
