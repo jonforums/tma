@@ -1,6 +1,6 @@
 /* Copyright (c) 2011, Jon Maken
  * License: 3-clause BSD
- * Revision: 11/25/2011 6:44:32 PM
+ * Revision: 11/25/2011 10:25:59 PM
  */
 
 // TODO list:
@@ -29,8 +29,8 @@ public:
 
 private:
     double frequency;
-    LARGE_INTEGER start_time;
-    LARGE_INTEGER stop_time;
+    LARGE_INTEGER start_count;
+    LARGE_INTEGER stop_count;
 };
 
 
@@ -38,8 +38,8 @@ private:
 template<TimeUnits tu>
 Timer<tu>::Timer()
 :   frequency(),
-    start_time(),
-    stop_time()
+    start_count(),
+    stop_count()
 {
     frequency = this->get_frequency();
 }
@@ -66,7 +66,7 @@ void Timer<tu>::start()
 {
     DWORD_PTR prev_am = ::SetThreadAffinityMask(::GetCurrentThread(), 0);
 
-    ::QueryPerformanceCounter(&start_time);
+    ::QueryPerformanceCounter(&start_count);
 
     ::SetThreadAffinityMask(::GetCurrentThread(), prev_am);
 }
@@ -76,11 +76,11 @@ double Timer<tu>::stop()
 {
     DWORD_PTR prev_am= ::SetThreadAffinityMask(::GetCurrentThread(), 0);
 
-    ::QueryPerformanceCounter(&stop_time);
+    ::QueryPerformanceCounter(&stop_count);
 
     ::SetThreadAffinityMask(::GetCurrentThread(), prev_am);
 
-    return ((stop_time.QuadPart - start_time.QuadPart) / frequency * tu);
+    return ((stop_count.QuadPart - start_count.QuadPart) / frequency * tu);
 }
 
 }  // namespace HiRes
