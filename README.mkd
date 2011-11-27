@@ -9,7 +9,7 @@ A helper for timing native Windows or Linux API calls.
 * MinGW or similar build environment
 * Live internet connection for one-time [Waf](http://code.google.com/p/waf/) build tool download
 
-## Usage
+## Build
 
 1. Ensure a MinGW toolchain is on your `PATH`. Windows users are encouraged to use the
    [DevKit](https://github.com/oneclick/rubyinstaller/wiki/Development-Kit). While my
@@ -17,11 +17,19 @@ A helper for timing native Windows or Linux API calls.
    run the `devkitvars.bat` or `devkitvars.ps1` scripts to bring the toolchain onto
    `PATH` and use it as a general purpose GCC-based build toolchain.
 2. Download and extract the project's ([zipball](https://github.com/jonforums/tma/zipball/master))
-   into `<your_build_dir>` or clone the project.
-3. `cd <your_build_dir>`
-4. `python wscript prepare` to download Waf
+   into `<your_dir>` or `git clone` the project.
+3. `cd <your_dir>`
+4. `python wscript prepare` to download waf if not already present
 5. `python waf configure --check-cxx-compiler=g++` (use `--prefix` to select install basedir)
-6. `python waf` (just build)
+6. `python waf` to build
+7. `python waf install` to install built artifacts into `--prefix` subdirs
+8. `python waf uninstall` to uninstall built artifacts
+9. `python waf clean build` to rebuild
+10. `python waf distclean` to clean everything and revert to a pristine state
+
+## Usage
+
+Include the `hrtimer.h` template header in your C++ exe or DLL. _Details coming_.
 
 ## License
 
