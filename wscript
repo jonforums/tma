@@ -61,6 +61,8 @@ def _prepare(args):
         with closing(urllib2.urlopen(waf.url)) as f, open('waf', 'wb') as w:
             w.write(f.read())
         print('-> downloaded waf from %s' % waf.url)
+    else:
+        print('-> nothing to download; using existing waf library')
 
 
 if __name__ == '__main__':
