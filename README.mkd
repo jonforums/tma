@@ -1,8 +1,27 @@
-## What??
+## What?
 
 A helper for timing native Windows or Linux API calls.
 
+## Prerequisites
+
+* Python 2.7
+* A zip extraction utility or a Git client such as [msysGit](http://code.google.com/p/msysgit/)
+* MinGW or similar build environment
+* Live internet connection for one-time [Waf](http://code.google.com/p/waf/) build tool download
+
 ## Usage
+
+1. Ensure a MinGW toolchain is on your `PATH`. Windows users are encouraged to use the
+   [DevKit](https://github.com/oneclick/rubyinstaller/wiki/Development-Kit). While my
+   instructions and install script at that link are specific to Ruby, you can simply
+   run the `devkitvars.bat` or `devkitvars.ps1` scripts to bring the toolchain onto
+   `PATH` and use it as a general purpose GCC-based build toolchain.
+2. Download and extract the project's ([zipball](https://github.com/jonforums/tma/zipball/master))
+   into `<your_build_dir>` or clone the project.
+3. `cd <your_build_dir>`
+4. `python wscript prepare` to download Waf
+5. `python waf configure --check-cxx-compiler=g++` (use `--prefix` to select install basedir)
+6. `python waf` (just build)
 
 ## License
 
@@ -10,5 +29,6 @@ A helper for timing native Windows or Linux API calls.
 
 ## TODO
 
-* refactor into runner exe loading custom code timing DLLs from the cmd line
+* refactor into runner exe loading custom timing DLLs from the cmd line
 * look into Linux's `clock_gettime`, `clock_getres`, `sysconf`, and `/proc/timer_list`
+* refactor to support both MinGW and MSVC toolchains
