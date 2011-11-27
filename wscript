@@ -1,6 +1,10 @@
 #! /usr/bin/env python
 # coding: utf-8
 
+# Copyright (c) 2011, Jon Maken
+# License: 3-clause BSD
+# Revision: 11/26/2011 10:32:58 PM
+
 import os
 import os.path
 import sys
@@ -43,6 +47,7 @@ def build(bld):
         target = 'mem_alloc',
         cxxflags = [ '-Wall', '-O3' ],
         linkflags = '-s',
+        dflags = [ '-g' ],
         )
 
 # helper functions
