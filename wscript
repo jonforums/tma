@@ -20,9 +20,13 @@ out = 'build'
 
 def options(opts):
     opts.load('compiler_cxx')
+    opts.add_option('--without-samples', action='store_true', default=False,
+                    help='do not build samples')
 
 def configure(conf):
     conf.load('compiler_cxx')
+
+    conf.env.SAMPLES = not conf.options.without_samples
 
     # override gcc defaults normally stored in _cache.py
     conf.env.SHLIB_MARKER = ''  # '-Wl,-Bdynamic'
@@ -40,13 +44,8 @@ def build(bld):
         )
 
     # build samples
-    bld.program(
-        source = [ 'samples/mem_alloc.cpp' ],
-        includes = [ 'include' ],
-        target = 'mem_alloc',
-        cxxflags = [ '-Wall', '-O3', '-g' ],
-        linkflags = '-s',
-        )
+    if bld.env.SAMPLES == True:
+        bld.recurse('samples')
 
 # helper functions
 def _prepare(args):
