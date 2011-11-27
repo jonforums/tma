@@ -17,7 +17,7 @@ A helper for timing native Windows or Linux API calls.
    run the `devkitvars.bat` or `devkitvars.ps1` scripts to bring the toolchain onto
    `PATH` and use it as a general purpose GCC-based build toolchain.
 2. Download and extract the project's ([zipball](https://github.com/jonforums/tma/zipball/master))
-   into `<your_dir>` or `git clone` the project.
+   into `<your_dir>` or `git clone https://github.com/jonforums/tma.git <your_dir>` the project.
 3. `cd <your_dir>`
 4. `python wscript prepare` to download waf if not already present
 5. `python waf configure --check-cxx-compiler=g++` (use `--prefix` to select install basedir)
