@@ -25,6 +25,18 @@ def configure(conf):
     conf.env.STLIB_MARKER = ''  # '-Wl,-Bstatic'
 
 def build(bld):
+
+    # build driver program
+    bld.program(
+        source = [ 'src/tma.cpp' ],
+        includes = [ 'include' ],
+        target = 'tma',
+        cxxflags = [ '-Wall', '-O3' ],
+        linkflags = [ '-s' ],
+        dflags = [ '-g' ],
+        )
+
+    # build samples
     bld.program(
         source = [ 'samples/mem_alloc.cpp' ],
         includes = [ 'include' ],
