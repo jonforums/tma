@@ -35,9 +35,8 @@ def build(bld):
         source = [ 'src/tma.cpp' ],
         includes = [ 'include' ],
         target = 'tma',
-        cxxflags = [ '-Wall', '-O3' ],
+        cxxflags = [ '-Wall', '-O3', '-g' ],
         linkflags = [ '-s' ],
-        dflags = [ '-g' ],
         )
 
     # build samples
@@ -45,9 +44,8 @@ def build(bld):
         source = [ 'samples/mem_alloc.cpp' ],
         includes = [ 'include' ],
         target = 'mem_alloc',
-        cxxflags = [ '-Wall', '-O3' ],
+        cxxflags = [ '-Wall', '-O3', '-g' ],
         linkflags = '-s',
-        dflags = [ '-g' ],
         )
 
 # helper functions
