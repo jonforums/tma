@@ -1,7 +1,11 @@
 /* Copyright (c) 2011, Jon Maken
  * License: 3-clause BSD
- * Revision: 11/26/2011 7:57:44 PM
+ * Revision: 11/27/2011 1:58:32 PM
  */
+
+#ifndef LOAD_H_
+#define LOAD_H_
+
 #if defined(_WIN32)
 #  include <windows.h>
 #else
@@ -39,3 +43,5 @@ inline BOOL close_dll(HMODULE dll)
     return dlclose(dll);
 #endif
 }
+
+#endif  // LOAD_H_
