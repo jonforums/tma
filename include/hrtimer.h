@@ -1,13 +1,11 @@
 /* Copyright (c) 2011, Jon Maken
  * License: 3-clause BSD
- * Revision: 11/26/2011 12:07:41 PM
+ * Revision: 11/27/2011 7:10:45 PM
  */
 
 // TODO
 // * relook at `SetThreadAffinityMask` set/reset usage in `start` & `stop`
 // * verify default `Timer(Timer& src)` and `void operator=(Timer& src)`
-// * finish `print` impl
-// * impl global `ostream& operator<<(ostream& os, Timer& timer)`
 // * impl Linux hires timing support
 
 #ifndef HIRES_TIMER_H_
@@ -15,6 +13,7 @@
 
 #include <ostream>
 #include <stdexcept>
+#include <string>
 
 #if defined(_WIN32)
 #  include <windows.h>
@@ -95,13 +94,52 @@ double Timer<Units>::get_frequency()
 template<TimeUnits Units>
 void Timer<Units>::print(std::ostream& os)
 {
-    os  << "Timer<units: "
-        << "TODO" << ", "
+    using std::string;
+    string time_unit;
+
+    switch(Units) {
+        case s:
+            time_unit = "s";
+            break;
+        case ms:
+            time_unit = "ms";
+            break;
+        case us:
+            time_unit = "us";
+            break;
+        case ns:
+            time_unit = "ns";
+            break;
+        default:
+            time_unit = "??";
+            break;
+    };
+
+    os  << "Timer<"
+        << this << ", "
+        << "units: "
+        << time_unit << ", "
         << "freq: "
         << frequency
         << ">";
 }
 
 }  // namespace HiRes
+
+
+/**
+ * Global function template for writing a HiRes::Timer instance to an output
+ * stream similar to:
+ *
+ *      HiRes::Timer<HiRes::ms> timer_ms;
+ *      cout << timer_ms << endl;
+ */
+template<HiRes::TimeUnits Units, typename charT, typename traits>
+std::basic_ostream<charT, traits>&
+operator<<(std::basic_ostream<charT, traits>& os, HiRes::Timer<Units>& timer)
+{
+    timer.print(os);
+    return os;
+}
 
 #endif  // HIRES_TIMER_H_
