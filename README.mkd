@@ -5,9 +5,11 @@ A helper for timing native Windows or Linux API calls.
 ## Prerequisites
 
 * Python 2.7
-* A zip extraction utility or a Git client such as [msysGit](http://code.google.com/p/msysgit/)
+* A zip extraction utility such as [7-Zip](http://www.7-zip.org/) or a Git client such
+  as [msysGit](http://code.google.com/p/msysgit/)
 * MinGW or similar build environment
-* Live internet connection for one-time [Waf](http://code.google.com/p/waf/) build tool download
+* Live internet connection for one-time download of the [Waf](http://code.google.com/p/waf/)
+  cross-platform build tool download
 
 ## Build
 
