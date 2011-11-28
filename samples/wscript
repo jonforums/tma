@@ -1,11 +1,17 @@
+import sys
+
 def build(bld):
+
+    lflags = [ '-s' ]
+    if not hasattr(sys, 'winver'):
+        lflags.append('-lrt')
 
     bld.program(
         source = [ 'mem_alloc.cpp' ],
         includes = [ '../include' ],
         target = 'mem_alloc',
         cxxflags = [ '-Wall', '-O3', '-g' ],
-        linkflags = '-s',
+        linkflags = lflags,
         )
 
 # vim: ft=python ai ts=4 sw=4 sts=4 et
