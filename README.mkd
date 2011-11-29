@@ -25,7 +25,7 @@ A helper for timing native Windows or Linux API calls.
    into `<your_dir>` or `git clone https://github.com/jonforums/tma.git <your_dir>` the project.
 3. `cd <your_dir>`
 4. `python wscript prepare` to download waf if not already present
-5. **Windows SDK** `python waf configure --msvc_version="wsdk 7.1" --msvc_targets="x86"` or
+5. **Windows SDK:** `python waf configure --msvc_version="wsdk 7.1" --msvc_targets="x86"` or
    **MinGW:** `python waf configure --check-cxx-compiler=g++` (use `--prefix` to
    select the installation base directory)
 6. `python waf` to build
@@ -48,4 +48,4 @@ Include the `hrtimer.h` template header in your C++ exe or DLL. _Details coming_
 
 * refactor into runner exe loading custom timing DLLs from the cmd line
 * finish Linux impl
-* add Stats class template with `count, min, max, mean, median, stdev`
+* add `Stats` class template with `count, min, max, mean, median, stdev`
