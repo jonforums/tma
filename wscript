@@ -34,13 +34,20 @@ def configure(conf):
 
 def build(bld):
 
+    if bld.env.CXX_NAME == 'msvc':
+        my_cxxflags = [ '/O2', '/EHsc' ]
+        my_linkflags = []
+    else:
+        my_cxxflags = [ '-Wall', '-O3', '-g' ]
+        my_linkflags = [ '-s' ]
+
     # build driver program
     bld.program(
         source = [ 'src/tma.cpp' ],
         includes = [ 'include' ],
         target = 'tma',
-        cxxflags = [ '-Wall', '-O3', '-g' ],
-        linkflags = [ '-s' ],
+        cxxflags = my_cxxflags,
+        linkflags = my_linkflags,
         )
 
     # build samples
