@@ -9,13 +9,13 @@ A helper for timing native Windows or Linux API calls.
   as [msysGit](http://code.google.com/p/msysgit/)
 * MinGW, VC++, or Windows SDK build environment
 * Live internet connection for one-time download of the [Waf](http://code.google.com/p/waf/)
-  cross-platform build tool download
+  cross-platform build tool
 
 ## Build
 
 1. When building with VC++ or the Windows SDK, waf will select the build environment
-   based upon it's `--msvc_version` and `--msvc_targets` command line options. But
-   when building with a MinGW toolchain, ensure it's on your `PATH` and use waf's
+   based upon it's `--msvc_version` and `--msvc_targets` command line options. When
+   building with a MinGW toolchain, ensure it's on your `PATH` and use waf's
    `--check-cxx-compiler` command line option. If you choose to build with MinGW, I
    encourage you to use the [DevKit](https://github.com/oneclick/rubyinstaller/wiki/Development-Kit).
    While my instructions and install script at that link are specific to Ruby, you
@@ -38,7 +38,8 @@ A helper for timing native Windows or Linux API calls.
 
 ## Usage
 
-Include the `hrtimer.h` template header in your C++ exe or DLL. _Details coming_.
+Include the `hrtimer.h` template header in your C++ exe or DLL and create a
+`HiRes::Timer<HiRes::TimeUnits>` instance. _Details coming_.
 
 ## License
 
