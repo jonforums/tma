@@ -7,27 +7,34 @@ A helper for timing native Windows or Linux API calls.
 * Python 2.7
 * A zip extraction utility such as [7-Zip](http://www.7-zip.org/) or a Git client such
   as [msysGit](http://code.google.com/p/msysgit/)
-* MinGW or similar build environment
+* MinGW, VC++, or Windows SDK build environment
 * Live internet connection for one-time download of the [Waf](http://code.google.com/p/waf/)
   cross-platform build tool download
 
 ## Build
 
-1. Ensure a MinGW toolchain is on your `PATH`. Windows users are encouraged to use the
-   [DevKit](https://github.com/oneclick/rubyinstaller/wiki/Development-Kit). While my
-   instructions and install script at that link are specific to Ruby, you can simply
-   run the `devkitvars.bat` or `devkitvars.ps1` scripts to bring the toolchain onto
-   `PATH` and use it as a general purpose GCC-based build toolchain.
+1. When building with VC++ or the Windows SDK, waf will select the build environment
+   based upon it's `--msvc_version` and `--msvc_targets` command line options. But
+   when building with a MinGW toolchain, ensure it's on your `PATH` and use waf's
+   `--check-cxx-compiler` command line option. If you choose to build with MinGW, I
+   encourage you to use the [DevKit](https://github.com/oneclick/rubyinstaller/wiki/Development-Kit).
+   While my instructions and install script at that link are specific to Ruby, you
+   can simply run the `devkitvars.bat` or `devkitvars.ps1` scripts to bring the
+   DevKit onto `PATH` and use it as a general purpose GCC-based build toolchain.
 2. Download and extract the project's [zipball](https://github.com/jonforums/tma/zipball/master)
    into `<your_dir>` or `git clone https://github.com/jonforums/tma.git <your_dir>` the project.
 3. `cd <your_dir>`
 4. `python wscript prepare` to download waf if not already present
-5. `python waf configure --check-cxx-compiler=g++` (use `--prefix` to select install basedir)
+5. **Windows SDK** `python waf configure --msvc_version="wsdk 7.1" --msvc_targets="x86"` or
+   **MinGW:** `python waf configure --check-cxx-compiler=g++` (use `--prefix` to
+   select the installation base directory)
 6. `python waf` to build
 7. `python waf install` to install built artifacts into `--prefix` subdirs
 8. `python waf uninstall` to uninstall built artifacts
 9. `python waf clean build` to rebuild
 10. `python waf distclean` to clean everything and revert to a pristine state
+
+**NOTE:** On Unix-like systems, you can typically drop `python` from the above build examples.
 
 ## Usage
 
@@ -40,5 +47,5 @@ Include the `hrtimer.h` template header in your C++ exe or DLL. _Details coming_
 ## TODO
 
 * refactor into runner exe loading custom timing DLLs from the cmd line
-* look into Linux's `clock_gettime`, `clock_getres`, `sysconf`, and `/proc/timer_list`
-* refactor to support both MinGW and MSVC toolchains
+* finish Linux impl
+* add Stats class template with `count, min, max, mean, median, stdev`
