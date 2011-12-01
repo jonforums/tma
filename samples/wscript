@@ -4,10 +4,15 @@ def build(bld):
 
     if bld.env.CXX_NAME == 'msvc':
         my_cxxflags = [ '/O2', '/EHsc' ]
+        if bld.env.DEBUG:
+            my_cxxflags.append('/Zi')
         my_linkflags = []
     else:
-        my_cxxflags = [ '-Wall', '-O3', '-g' ]
+        my_cxxflags = [ '-Wall', '-O3' ]
         my_linkflags = [ '-s' ]
+        if bld.env.DEBUG:
+            my_cxxflags.append('-g')
+            my_linkflags.remove('-s')
 
     if sys.platform != 'win32':
         my_linkflags.append('-lrt')

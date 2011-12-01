@@ -22,11 +22,14 @@ def options(opts):
     opts.load('compiler_cxx')
     opts.add_option('--without-samples', action='store_true', default=False,
                     help='do not build samples')
+    opts.add_option('--debug', action='store_true', default=False,
+                    help='build with debugging support')
 
 def configure(conf):
     conf.load('compiler_cxx')
 
     conf.env.SAMPLES = not conf.options.without_samples
+    conf.env.DEBUG = conf.options.debug
 
     # override gcc defaults normally stored in _cache.py
     conf.env.SHLIB_MARKER = ''  # '-Wl,-Bdynamic'
@@ -36,10 +39,15 @@ def build(bld):
 
     if bld.env.CXX_NAME == 'msvc':
         my_cxxflags = [ '/O2', '/EHsc' ]
+        if bld.env.DEBUG:
+            my_cxxflags.append('/Zi')
         my_linkflags = []
     else:
-        my_cxxflags = [ '-Wall', '-O3', '-g' ]
+        my_cxxflags = [ '-Wall', '-O3' ]
         my_linkflags = [ '-s' ]
+        if bld.env.DEBUG:
+            my_cxxflags.append('-g')
+            my_linkflags.remove('-s')
 
     # build driver program
     bld.program(
