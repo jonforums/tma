@@ -90,7 +90,7 @@ double Timer<Units>::stop()
     return ((stop_count.QuadPart - start_count.QuadPart) / frequency * Units);
 #else
     // TODO how to always force to the same CPU?
-    ::clock_gettime(CLOCK_MONOTONIC, &start_count);
+    ::clock_gettime(CLOCK_MONOTONIC, &stop_count);
 
     time_t delta_sec = stop_count.tv_sec - start_count.tv_sec;
     long delta_nsec = stop_count.tv_nsec - start_count.tv_nsec;
