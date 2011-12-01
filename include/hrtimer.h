@@ -1,14 +1,11 @@
 /* Copyright (c) 2011, Jon Maken
  * License: 3-clause BSD
- * Revision: 11/28/2011 12:43:19 PM
+ * Revision: 12/01/2011 6:35:55 PM
  */
 
 // TODO
 // * relook at `SetThreadAffinityMask` set/reset usage in `start` & `stop`
 // * verify default `Timer(Timer& src)` and `void operator=(Timer& src)`
-// * impl Linux hires timing support via `clock_gettime(CLOCK_MONOTONIC, &ts)`
-//   and `clock_getres(CLOCK_MONOTONIC, &ts)`
-// * use CLOCK_MONOTONIC or CLOCK_REALTIME for Linux impl?
 
 #ifndef HIRES_TIMER_H_
 #define HIRES_TIMER_H_
@@ -58,7 +55,7 @@ Timer<Units>::Timer()
     start_count(),
     stop_count()
 {
-    frequency = this->get_frequency();
+    frequency = get_frequency();
 }
 
 template<TimeUnits Units>
@@ -97,11 +94,11 @@ double Timer<Units>::stop()
 
     if (delta_nsec < 0) {
         delta_sec = stop_count.tv_sec - start_count.tv_sec - 1;
-        delta_nsec = (1000000000 + stop_count.tv_nsec) - start_count.tv_nsec;
+        delta_nsec = (ns + stop_count.tv_nsec) - start_count.tv_nsec;
     }
 
-    // FIXME did I really write this!?
-    return (delta_sec + static_cast<double>(delta_nsec / 1000000000)) * Units;
+    // TODO dodgy, review type limits
+    return (delta_sec + (delta_nsec / static_cast<double>(ns)) * Units);
 #endif
 }
 
@@ -118,6 +115,7 @@ double Timer<Units>::get_frequency()
     return freq.QuadPart;
 #else
     // TODO implement rv
+    //      throw runtime exception if timer isn't high resolution?
     timespec freq;
 
     if (clock_getres(CLOCK_MONOTONIC, &freq))
