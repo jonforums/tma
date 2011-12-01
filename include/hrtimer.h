@@ -74,7 +74,8 @@ void Timer<Units>::start()
     ::QueryPerformanceCounter(&start_count);
     ::SetThreadAffinityMask(::GetCurrentThread(), prev_am);
 #else
-    clock_gettime(CLOCK_MONOTONIC, &start_count);
+    // TODO how to always force to the same CPU?
+    ::clock_gettime(CLOCK_MONOTONIC, &start_count);
 #endif
 }
 
@@ -88,10 +89,19 @@ double Timer<Units>::stop()
 
     return ((stop_count.QuadPart - start_count.QuadPart) / frequency * Units);
 #else
-    // TODO implement rv
-    clock_gettime(CLOCK_MONOTONIC, &start_count);
+    // TODO how to always force to the same CPU?
+    ::clock_gettime(CLOCK_MONOTONIC, &start_count);
 
-    return 0;
+    time_t delta_sec = stop_count.tv_sec - start_count.tv_sec;
+    long delta_nsec = stop_count.tv_nsec - start_count.tv_nsec;
+
+    if (delta_nsec < 0) {
+        delta_sec = stop_count.tv_sec - start_count.tv_sec - 1;
+        delta_nsec = (1000000000 + stop_count.tv_nsec) - start_count.tv_nsec;
+    }
+
+    // FIXME did I really write this!?
+    return (delta_sec + static_cast<double>(delta_nsec / 1000000000)) * Units;
 #endif
 }
 
