@@ -9,7 +9,7 @@ def build(bld):
         my_cxxflags = [ '-Wall', '-O3', '-g' ]
         my_linkflags = [ '-s' ]
 
-    if not hasattr(sys, 'winver'):
+    if sys.platform != 'win32':
         my_linkflags.append('-lrt')
 
     bld.program(
