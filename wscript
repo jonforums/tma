@@ -3,7 +3,7 @@
 
 # Copyright (c) 2011, Jon Maken
 # License: 3-clause BSD
-# Revision: 11/26/2011 10:32:58 PM
+# Revision: 12/02/2011 11:44:03 AM
 
 import os
 import os.path
@@ -31,14 +31,14 @@ def configure(conf):
     conf.env.SAMPLES = not conf.options.without_samples
     conf.env.DEBUG = conf.options.debug
 
-    # override gcc defaults normally stored in _cache.py
+    # override gcc defaults stored in _cache.py
     conf.env.SHLIB_MARKER = ''  # '-Wl,-Bdynamic'
     conf.env.STLIB_MARKER = ''  # '-Wl,-Bstatic'
 
 def build(bld):
 
     if bld.env.CXX_NAME == 'msvc':
-        my_cxxflags = [ '/O2', '/EHsc' ]
+        my_cxxflags = [ '/W3', '/O2', '/EHsc' ]
         if bld.env.DEBUG:
             my_cxxflags.append('/Zi')
         my_linkflags = []

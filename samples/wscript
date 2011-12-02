@@ -3,7 +3,7 @@ import sys
 def build(bld):
 
     if bld.env.CXX_NAME == 'msvc':
-        my_cxxflags = [ '/O2', '/EHsc' ]
+        my_cxxflags = [ '/W3', '/O2', '/EHsc' ]
         if bld.env.DEBUG:
             my_cxxflags.append('/Zi')
         my_linkflags = []
