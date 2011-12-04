@@ -1,6 +1,7 @@
 .lock-waf*
 waf*
 build/
+mine/
 *.exe
 *.obj
 *.o
