@@ -1,11 +1,15 @@
 /* Copyright (c) 2011, Jon Maken
  * License: 3-clause BSD
- * Revision: 12/01/2011 6:35:55 PM
+ * Revision: 12/04/2011 12:49:53 PM
  */
 
 // TODO
 // * relook at `SetThreadAffinityMask` set/reset usage in `start` & `stop`
 // * verify default `Timer(Timer& src)` and `void operator=(Timer& src)`
+// * add `int sched_setaffinity(pid_t pid, size_t cpusetsize, cpu_set_t *mask)`
+//   with pid = 0 to Linux impl of start/stop
+// * extract CPU affinity code from start/stop timing code paths; always run
+//   timer and timed code on the first CPU?
 
 #ifndef HIRES_TIMER_H_
 #define HIRES_TIMER_H_
@@ -71,7 +75,6 @@ void Timer<Units>::start()
     ::QueryPerformanceCounter(&start_count);
     ::SetThreadAffinityMask(::GetCurrentThread(), prev_am);
 #else
-    // TODO how to always force to the same CPU?
     ::clock_gettime(CLOCK_MONOTONIC, &start_count);
 #endif
 }
@@ -86,7 +89,6 @@ double Timer<Units>::stop()
 
     return ((stop_count.QuadPart - start_count.QuadPart) / frequency * Units);
 #else
-    // TODO how to always force to the same CPU?
     ::clock_gettime(CLOCK_MONOTONIC, &stop_count);
 
     time_t delta_sec = stop_count.tv_sec - start_count.tv_sec;

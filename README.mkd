@@ -48,5 +48,5 @@ Include the `hrtimer.h` template header in your C++ exe or DLL and create a
 ## TODO
 
 * refactor into runner exe loading custom timing DLLs from the cmd line
-* finish Linux impl
 * add `Stats` class template with `count, min, max, mean, median, stdev`
+* extract CPU affinity code from start/stop timing code paths
