@@ -3,7 +3,7 @@
 
 # Copyright (c) 2011, Jon Maken
 # License: 3-clause BSD
-# Revision: 12/02/2011 11:44:03 AM
+# Revision: 12/04/2011 11:44:17 AM
 
 import os
 import os.path
@@ -20,8 +20,14 @@ out = 'build'
 
 def options(opts):
     opts.load('compiler_cxx')
+
     opts.add_option('--without-samples', action='store_true', default=False,
                     help='do not build samples')
+    my_dir = os.path.realpath(os.path.join(top, 'mine'))
+    opts.add_option('--with-mine', action='store_true', default=False,
+                    help='build custom timed source found in "' + my_dir + '"')
+    opts.add_option('--my-dir', action='store', default=my_dir,
+                    help='custom timed source directory location')
     opts.add_option('--debug', action='store_true', default=False,
                     help='build with debugging support')
 
@@ -30,6 +36,8 @@ def configure(conf):
 
     conf.env.SAMPLES = not conf.options.without_samples
     conf.env.DEBUG = conf.options.debug
+    conf.env.WITH_MINE = conf.options.with_mine
+    conf.env.MY_TIMED_SRCDIR = os.path.realpath(conf.options.my_dir)
 
     # override gcc defaults stored in _cache.py
     conf.env.SHLIB_MARKER = ''  # '-Wl,-Bdynamic'
@@ -59,8 +67,12 @@ def build(bld):
         )
 
     # build samples
-    if bld.env.SAMPLES == True:
+    if bld.env.SAMPLES:
         bld.recurse('samples')
+
+    # build custom timed source code
+    if bld.env.WITH_MINE:
+        bld.recurse(bld.env.MY_TIMED_SRCDIR)
 
 # helper functions
 def _prepare(args):
