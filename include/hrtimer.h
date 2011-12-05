@@ -1,10 +1,10 @@
 /* Copyright (c) 2011, Jon Maken
  * License: 3-clause BSD
- * Revision: 12/04/2011 12:49:53 PM
+ * Revision: 12/05/2011 3:22:05 PM
  */
 
 // TODO
-// * relook at `SetThreadAffinityMask` set/reset usage in `start` & `stop`
+// * check return values
 // * verify default `Timer(Timer& src)` and `void operator=(Timer& src)`
 // * add `int sched_setaffinity(pid_t pid, size_t cpusetsize, cpu_set_t *mask)`
 //   with pid = 0 to Linux impl of start/stop
@@ -71,7 +71,7 @@ template<TimeUnits Units>
 void Timer<Units>::start()
 {
 #if defined(_WIN32)
-    DWORD_PTR prev_am = ::SetThreadAffinityMask(::GetCurrentThread(), 0);
+    DWORD_PTR prev_am = ::SetThreadAffinityMask(::GetCurrentThread(), 1);
     ::QueryPerformanceCounter(&start_count);
     ::SetThreadAffinityMask(::GetCurrentThread(), prev_am);
 #else
@@ -83,7 +83,7 @@ template<TimeUnits Units>
 double Timer<Units>::stop()
 {
 #if defined(_WIN32)
-    DWORD_PTR prev_am= ::SetThreadAffinityMask(::GetCurrentThread(), 0);
+    DWORD_PTR prev_am= ::SetThreadAffinityMask(::GetCurrentThread(), 1);
     ::QueryPerformanceCounter(&stop_count);
     ::SetThreadAffinityMask(::GetCurrentThread(), prev_am);
 
