@@ -1,6 +1,6 @@
 /* Copyright (c) 2011, Jon Maken
  * License: 3-clause BSD
- * Revision: 12/06/2011 3:46:36 PM
+ * Revision: 12/06/2011 4:19:51 PM
  */
 
 // TODO
@@ -63,6 +63,11 @@ Timer<Units>::Timer()
 , _stop_count()
 {
     _frequency = get_frequency();
+
+#if !defined(_WIN32)
+    if (::sched_getaffinity(0, sizeof(_affinity_mask), &_affinity_mask) == -1)
+        std::cerr << "[WARN] unable to get default CPU affinity mask" << std::endl;
+#endif
 }
 
 template <TimeUnits Units>
@@ -79,6 +84,12 @@ void Timer<Units>::start()
 
     ::QueryPerformanceCounter(&_start_count);
 #else
+    cpu_set_t mask;
+    CPU_ZERO(&mask);
+    CPU_SET(1, &mask);
+    if (::sched_setaffinity(0, sizeof(mask), &mask) == -1)
+        std::cerr << "[WARN] unable to set current thread's CPU affinity" << std::endl;
+
     ::clock_gettime(CLOCK_MONOTONIC, &_start_count);
 #endif
 }
@@ -95,6 +106,9 @@ double Timer<Units>::stop()
     return ((_stop_count.QuadPart - _start_count.QuadPart) / _frequency * Units);
 #else
     ::clock_gettime(CLOCK_MONOTONIC, &_stop_count);
+
+    if (::sched_setaffinity(0, sizeof(_affinity_mask), &_affinity_mask) == -1)
+        std::cerr << "[WARN] unable to reset current thread's CPU affinity" << std::endl;
 
     time_t delta_sec = _stop_count.tv_sec - _start_count.tv_sec;
     long delta_nsec = _stop_count.tv_nsec - _start_count.tv_nsec;
