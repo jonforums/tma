@@ -43,6 +43,7 @@ public:
 private:
     double frequency;
 #if defined(_WIN32)
+    DWORD_PTR affinity_mask;
     LARGE_INTEGER start_count;
     LARGE_INTEGER stop_count;
 #else
@@ -56,6 +57,7 @@ private:
 template<TimeUnits Units>
 Timer<Units>::Timer()
 :   frequency(),
+    affinity_mask(),
     start_count(),
     stop_count()
 {
@@ -71,9 +73,10 @@ template<TimeUnits Units>
 void Timer<Units>::start()
 {
 #if defined(_WIN32)
-    DWORD_PTR prev_am = ::SetThreadAffinityMask(::GetCurrentThread(), 1);
+    if (!(affinity_mask = ::SetThreadAffinityMask(::GetCurrentThread(), 1)))
+        std::cerr << "[WARN] unable to set current thread's CPU affinity" << std::endl;
+
     ::QueryPerformanceCounter(&start_count);
-    ::SetThreadAffinityMask(::GetCurrentThread(), prev_am);
 #else
     ::clock_gettime(CLOCK_MONOTONIC, &start_count);
 #endif
@@ -83,9 +86,10 @@ template<TimeUnits Units>
 double Timer<Units>::stop()
 {
 #if defined(_WIN32)
-    DWORD_PTR prev_am= ::SetThreadAffinityMask(::GetCurrentThread(), 1);
     ::QueryPerformanceCounter(&stop_count);
-    ::SetThreadAffinityMask(::GetCurrentThread(), prev_am);
+
+    if (!::SetThreadAffinityMask(::GetCurrentThread(), affinity_mask))
+        std::cerr << "[WARN] unable to reset current thread's CPU affinity" << std::endl;
 
     return ((stop_count.QuadPart - start_count.QuadPart) / frequency * Units);
 #else
