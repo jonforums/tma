@@ -1,6 +1,6 @@
 /* Copyright (c) 2011, Jon Maken
  * License: 3-clause BSD
- * Revision: 12/06/2011 3:23:30 PM
+ * Revision: 12/06/2011 3:46:36 PM
  */
 
 // TODO
@@ -20,6 +20,7 @@
 #  include <windows.h>
 #else
 #  include <time.h>
+#  include <sched.h>
 #endif
 
 namespace HiRes {
@@ -46,6 +47,7 @@ private:
     LARGE_INTEGER _start_count;
     LARGE_INTEGER _stop_count;
 #else
+    cpu_set_t _affinity_mask;
     timespec _start_count;
     timespec _stop_count;
 #endif
