@@ -48,5 +48,7 @@ Include the `hrtimer.h` template header in your C++ exe or DLL and create a
 ## TODO
 
 * refactor into runner exe loading custom timing DLLs from the cmd line
-* add `Stats` class template with `count, min, max, mean, median, stdev`
-* extract CPU affinity code from start/stop timing code paths
+* add `median` to `Statistics` functor class template
+* add Linux CPU affinity set/reset support to `start/stop`
+* add useful code comments and usage doco
+* isn't it well past time for http://sourceforge.net/projects/cpputest/files/
