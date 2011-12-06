@@ -1,6 +1,6 @@
 /* Copyright (c) 2011, Jon Maken
  * License: 3-clause BSD
- * Revision: 12/06/2011 10:55:49 AM
+ * Revision: 12/06/2011 3:23:23 PM
  */
 
 #ifndef HIRES_STATISTICS_H_
@@ -12,14 +12,15 @@
 namespace HiRes {
 
 template <typename T>
-class Statistics {
+class Statistics
+{
 public:
     Statistics()
-    : _n(0),
-      _min(std::numeric_limits<T>::max()),
-      _max(std::numeric_limits<T>::min()),
-      _sum(0),
-      _sum_squares(0)
+    : _n(0)
+    , _min(std::numeric_limits<T>::max())
+    , _max(std::numeric_limits<T>::min())
+    , _sum(0)
+    , _sum_squares(0)
     {
     }
 

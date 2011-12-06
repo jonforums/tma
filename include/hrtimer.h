@@ -1,6 +1,6 @@
 /* Copyright (c) 2011, Jon Maken
  * License: 3-clause BSD
- * Revision: 12/05/2011 3:22:05 PM
+ * Revision: 12/06/2011 3:23:30 PM
  */
 
 // TODO
@@ -8,8 +8,6 @@
 // * verify default `Timer(Timer& src)` and `void operator=(Timer& src)`
 // * add `int sched_setaffinity(pid_t pid, size_t cpusetsize, cpu_set_t *mask)`
 //   with pid = 0 to Linux impl of start/stop
-// * extract CPU affinity code from start/stop timing code paths; always run
-//   timer and timed code on the first CPU?
 
 #ifndef HIRES_TIMER_H_
 #define HIRES_TIMER_H_
@@ -30,7 +28,8 @@ enum TimeUnits { s=1, ms=1000, us=1000000, ns=1000000000 };
 
 // Timer class template declaration
 template <TimeUnits Units = HiRes::s>
-class Timer {
+class Timer
+{
 public:
     Timer();
     ~Timer();
@@ -41,66 +40,66 @@ public:
     void print(std::ostream& os);
 
 private:
-    double frequency;
+    double _frequency;
 #if defined(_WIN32)
-    DWORD_PTR affinity_mask;
-    LARGE_INTEGER start_count;
-    LARGE_INTEGER stop_count;
+    DWORD_PTR _affinity_mask;
+    LARGE_INTEGER _start_count;
+    LARGE_INTEGER _stop_count;
 #else
-    timespec start_count;
-    timespec stop_count;
+    timespec _start_count;
+    timespec _stop_count;
 #endif
 };
 
 
 // Separate Timer class template definition for possible extraction to .cpp
-template<TimeUnits Units>
+template <TimeUnits Units>
 Timer<Units>::Timer()
-:   frequency(),
-    affinity_mask(),
-    start_count(),
-    stop_count()
+: _frequency()
+, _affinity_mask()
+, _start_count()
+, _stop_count()
 {
-    frequency = get_frequency();
+    _frequency = get_frequency();
 }
 
-template<TimeUnits Units>
+template <TimeUnits Units>
 Timer<Units>::~Timer()
 {
 }
 
-template<TimeUnits Units>
+template <TimeUnits Units>
 void Timer<Units>::start()
 {
 #if defined(_WIN32)
-    if (!(affinity_mask = ::SetThreadAffinityMask(::GetCurrentThread(), 1)))
+    if (!(_affinity_mask = ::SetThreadAffinityMask(::GetCurrentThread(), 1)))
         std::cerr << "[WARN] unable to set current thread's CPU affinity" << std::endl;
 
-    ::QueryPerformanceCounter(&start_count);
+    ::QueryPerformanceCounter(&_start_count);
 #else
-    ::clock_gettime(CLOCK_MONOTONIC, &start_count);
+    ::clock_gettime(CLOCK_MONOTONIC, &_start_count);
 #endif
 }
 
-template<TimeUnits Units>
+template <TimeUnits Units>
 double Timer<Units>::stop()
 {
 #if defined(_WIN32)
-    ::QueryPerformanceCounter(&stop_count);
+    ::QueryPerformanceCounter(&_stop_count);
 
-    if (!::SetThreadAffinityMask(::GetCurrentThread(), affinity_mask))
+    if (!::SetThreadAffinityMask(::GetCurrentThread(), _affinity_mask))
         std::cerr << "[WARN] unable to reset current thread's CPU affinity" << std::endl;
 
-    return ((stop_count.QuadPart - start_count.QuadPart) / frequency * Units);
+    return ((_stop_count.QuadPart - _start_count.QuadPart) / _frequency * Units);
 #else
-    ::clock_gettime(CLOCK_MONOTONIC, &stop_count);
+    ::clock_gettime(CLOCK_MONOTONIC, &_stop_count);
 
-    time_t delta_sec = stop_count.tv_sec - start_count.tv_sec;
-    long delta_nsec = stop_count.tv_nsec - start_count.tv_nsec;
+    time_t delta_sec = _stop_count.tv_sec - _start_count.tv_sec;
+    long delta_nsec = _stop_count.tv_nsec - _start_count.tv_nsec;
 
     if (delta_nsec < 0) {
-        delta_sec = stop_count.tv_sec - start_count.tv_sec - 1;
-        delta_nsec = (ns + stop_count.tv_nsec) - start_count.tv_nsec;
+        delta_sec = _stop_count.tv_sec - _start_count.tv_sec - 1;
+        delta_nsec = (ns + _stop_count.tv_nsec) - _start_count.tv_nsec;
     }
 
     // TODO dodgy, review type limits
@@ -108,7 +107,7 @@ double Timer<Units>::stop()
 #endif
 }
 
-template<TimeUnits Units>
+template <TimeUnits Units>
 double Timer<Units>::get_frequency()
 {
 #if defined(_WIN32)
@@ -131,7 +130,7 @@ double Timer<Units>::get_frequency()
 #endif
 }
 
-template<TimeUnits Units>
+template <TimeUnits Units>
 void Timer<Units>::print(std::ostream& os)
 {
     using std::string;
@@ -160,7 +159,7 @@ void Timer<Units>::print(std::ostream& os)
         << "units: "
         << time_unit << ", "
         << "freq: "
-        << frequency
+        << _frequency
         << ">";
 }
 
@@ -174,7 +173,7 @@ void Timer<Units>::print(std::ostream& os)
  *      HiRes::Timer<HiRes::ms> timer_ms;
  *      cout << timer_ms << endl;
  */
-template<HiRes::TimeUnits Units, typename charT, typename traits>
+template <HiRes::TimeUnits Units, typename charT, typename traits>
 std::basic_ostream<charT, traits>&
 operator<<(std::basic_ostream<charT, traits>& os, HiRes::Timer<Units>& timer)
 {
