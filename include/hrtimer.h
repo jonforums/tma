@@ -1,13 +1,11 @@
 /* Copyright (c) 2011, Jon Maken
  * License: 3-clause BSD
- * Revision: 12/06/2011 4:19:51 PM
+ * Revision: 12/06/2011 4:32:48 PM
  */
 
 // TODO
 // * check return values
 // * verify default `Timer(Timer& src)` and `void operator=(Timer& src)`
-// * add `int sched_setaffinity(pid_t pid, size_t cpusetsize, cpu_set_t *mask)`
-//   with pid = 0 to Linux impl of start/stop
 
 #ifndef HIRES_TIMER_H_
 #define HIRES_TIMER_H_
@@ -86,7 +84,7 @@ void Timer<Units>::start()
 #else
     cpu_set_t mask;
     CPU_ZERO(&mask);
-    CPU_SET(1, &mask);
+    CPU_SET(0, &mask);
     if (::sched_setaffinity(0, sizeof(mask), &mask) == -1)
         std::cerr << "[WARN] unable to set current thread's CPU affinity" << std::endl;
 
