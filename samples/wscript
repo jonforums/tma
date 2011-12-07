@@ -25,4 +25,12 @@ def build(bld):
         linkflags = my_linkflags,
         )
 
+    bld.program(
+        source = [ 'file_access.cpp' ],
+        includes = [ '../include' ],
+        target = 'file_access',
+        cxxflags = my_cxxflags,
+        linkflags = my_linkflags,
+        )
+
 # vim: ft=python ai ts=4 sw=4 sts=4 et
