@@ -1,11 +1,12 @@
 /* Copyright (c) 2011, Jon Maken
  * License: 3-clause BSD
- * Revision: 12/06/2011 4:32:48 PM
+ * Revision: 12/07/2011 7:47:35 PM
  */
 
 // TODO
 // * check return values
 // * verify default `Timer(Timer& src)` and `void operator=(Timer& src)`
+// * add Linux impl for thread priority boost
 
 #ifndef HIRES_TIMER_H_
 #define HIRES_TIMER_H_
@@ -79,6 +80,8 @@ void Timer<Units>::start()
 #if defined(_WIN32)
     if (!(_affinity_mask = ::SetThreadAffinityMask(::GetCurrentThread(), 1)))
         std::cerr << "[WARN] unable to set current thread's CPU affinity" << std::endl;
+    if (!::SetThreadPriority(::GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL))
+        std::cerr << "[WARN] unable to increase current thread's priority" << std::endl;
 
     ::QueryPerformanceCounter(&_start_count);
 #else
@@ -98,6 +101,8 @@ double Timer<Units>::stop()
 #if defined(_WIN32)
     ::QueryPerformanceCounter(&_stop_count);
 
+    if (!::SetThreadPriority(::GetCurrentThread(), THREAD_PRIORITY_NORMAL))
+        std::cerr << "[WARN] unable to normalize current thread's priority" << std::endl;
     if (!::SetThreadAffinityMask(::GetCurrentThread(), _affinity_mask))
         std::cerr << "[WARN] unable to reset current thread's CPU affinity" << std::endl;
 
