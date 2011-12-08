@@ -1,6 +1,6 @@
 /* Copyright (c) 2011, Jon Maken
  * License: 3-clause BSD
- * Revision: 12/07/2011 7:47:35 PM
+ * Revision: 12/08/2011 3:26:09 PM
  */
 
 // TODO
@@ -11,6 +11,7 @@
 #ifndef HIRES_TIMER_H_
 #define HIRES_TIMER_H_
 
+#include <cstdlib>
 #include <ostream>
 #include <stdexcept>
 #include <string>
@@ -182,6 +183,23 @@ void Timer<Units>::print(std::ostream& os)
         << ">";
 }
 
+
+class Init
+{
+public:
+    Init()
+    {
+        char* priority_flag = getenv("PROCESS_PRIORITY_REALTIME");
+        if (priority_flag && atoi(priority_flag))
+        {
+#if defined(_WIN32)
+            SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
+#else
+#endif
+        }
+    }
+};
+
 }  // namespace HiRes
 
 
@@ -199,5 +217,10 @@ operator<<(std::basic_ostream<charT, traits>& os, HiRes::Timer<Units>& timer)
     timer.print(os);
     return os;
 }
+
+
+// Automate custom initialization so that user doesn't have to explicitly
+// perform additional boilerplate initialization
+static HiRes::Init init;
 
 #endif  // HIRES_TIMER_H_
