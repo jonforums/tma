@@ -19,6 +19,7 @@
 #if defined(_WIN32)
 #  include <io.h>
 #  define executable "basic_stats.exe"
+#  define access _access
 #else
 #  include <unistd.h>
 #  define executable "basic_stats"
@@ -40,7 +41,7 @@ int main(int argc, char* argv[])
     for (int i = 0; i < TEST_COUNT; i++)
     {
         tmr_us.start();
-        _access(executable, 4);
+        access(executable, 4);
         rv = tmr_us.stop();
         data.push_back(rv);
     }
