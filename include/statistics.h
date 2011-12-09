@@ -1,6 +1,6 @@
 /* Copyright (c) 2011, Jon Maken
  * License: 3-clause BSD
- * Revision: 12/06/2011 3:23:23 PM
+ * Revision: 12/09/2011 2:46:38 PM
  */
 
 #ifndef HIRES_STATISTICS_H_
@@ -46,7 +46,7 @@ public:
     {
         return (_sum_squares - _sum * _sum / _n) / (_n - 1);
     }
-    T stdev() const { return sqrt(variance()); }
+    T stdev() const { return std::sqrt(variance()); }
     T cv() const { return stdev() / mean(); };
 
 private:
