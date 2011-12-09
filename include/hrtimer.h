@@ -1,10 +1,9 @@
 /* Copyright (c) 2011, Jon Maken
  * License: 3-clause BSD
- * Revision: 12/08/2011 3:26:09 PM
+ * Revision: 12/09/2011 6:03:43 PM
  */
 
 // TODO
-// * check return values
 // * verify default `Timer(Timer& src)` and `void operator=(Timer& src)`
 // * add Linux impl for thread priority boost
 
@@ -193,7 +192,8 @@ public:
         if (priority_flag && atoi(priority_flag))
         {
 #if defined(_WIN32)
-            SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
+            if (!SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS))
+                std::cerr << "[WARN] unable to increase process priority" << std::endl;
 #else
 #endif
         }
