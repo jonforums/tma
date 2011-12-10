@@ -3,7 +3,7 @@
 
 # Copyright (c) 2011, Jon Maken
 # License: 3-clause BSD
-# Revision: 12/04/2011 11:44:17 AM
+# Revision: 12/09/2011 7:48:26 PM
 
 import os
 import os.path
@@ -46,7 +46,7 @@ def configure(conf):
 def build(bld):
 
     if bld.env.CXX_NAME == 'msvc':
-        my_cxxflags = [ '/W3', '/O2', '/EHsc' ]
+        my_cxxflags = [ '/W1', '/O2', '/EHsc' ]
         if bld.env.DEBUG:
             my_cxxflags.append('/Zi')
         my_linkflags = []
