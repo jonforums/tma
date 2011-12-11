@@ -1,6 +1,6 @@
 /* Copyright (c) 2011, Jon Maken
  * License: 3-clause BSD
- * Revision: 12/09/2011 6:03:43 PM
+ * Revision: 12/10/2011 9:29:37 PM
  */
 
 // TODO
@@ -10,7 +10,6 @@
 #ifndef HIRES_TIMER_H_
 #define HIRES_TIMER_H_
 
-#include <cstdlib>
 #include <ostream>
 #include <stdexcept>
 #include <string>
@@ -18,6 +17,7 @@
 #if defined(_WIN32)
 #  include <windows.h>
 #else
+#  include <cstdlib>
 #  include <time.h>
 #  include <sched.h>
 #endif
@@ -64,7 +64,7 @@ Timer<Units>::Timer()
     _frequency = get_frequency();
 
 #if !defined(_WIN32)
-    if (::sched_getaffinity(0, sizeof(_affinity_mask), &_affinity_mask) == -1)
+    if (sched_getaffinity(0, sizeof(_affinity_mask), &_affinity_mask) == -1)
         std::cerr << "[WARN] unable to get default CPU affinity mask" << std::endl;
 #endif
 }
@@ -78,20 +78,20 @@ template <TimeUnits Units>
 void Timer<Units>::start()
 {
 #if defined(_WIN32)
-    if (!(_affinity_mask = ::SetThreadAffinityMask(::GetCurrentThread(), 1)))
+    if (!(_affinity_mask = SetThreadAffinityMask(GetCurrentThread(), 1)))
         std::cerr << "[WARN] unable to set current thread's CPU affinity" << std::endl;
-    if (!::SetThreadPriority(::GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL))
+    if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL))
         std::cerr << "[WARN] unable to increase current thread's priority" << std::endl;
 
-    ::QueryPerformanceCounter(&_start_count);
+    QueryPerformanceCounter(&_start_count);
 #else
     cpu_set_t mask;
     CPU_ZERO(&mask);
     CPU_SET(0, &mask);
-    if (::sched_setaffinity(0, sizeof(mask), &mask) == -1)
+    if (sched_setaffinity(0, sizeof(mask), &mask) == -1)
         std::cerr << "[WARN] unable to set current thread's CPU affinity" << std::endl;
 
-    ::clock_gettime(CLOCK_MONOTONIC, &_start_count);
+    clock_gettime(CLOCK_MONOTONIC, &_start_count);
 #endif
 }
 
@@ -99,18 +99,18 @@ template <TimeUnits Units>
 double Timer<Units>::stop()
 {
 #if defined(_WIN32)
-    ::QueryPerformanceCounter(&_stop_count);
+    QueryPerformanceCounter(&_stop_count);
 
-    if (!::SetThreadPriority(::GetCurrentThread(), THREAD_PRIORITY_NORMAL))
+    if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_NORMAL))
         std::cerr << "[WARN] unable to normalize current thread's priority" << std::endl;
-    if (!::SetThreadAffinityMask(::GetCurrentThread(), _affinity_mask))
+    if (!SetThreadAffinityMask(GetCurrentThread(), _affinity_mask))
         std::cerr << "[WARN] unable to reset current thread's CPU affinity" << std::endl;
 
     return ((_stop_count.QuadPart - _start_count.QuadPart) / _frequency * Units);
 #else
-    ::clock_gettime(CLOCK_MONOTONIC, &_stop_count);
+    clock_gettime(CLOCK_MONOTONIC, &_stop_count);
 
-    if (::sched_setaffinity(0, sizeof(_affinity_mask), &_affinity_mask) == -1)
+    if (sched_setaffinity(0, sizeof(_affinity_mask), &_affinity_mask) == -1)
         std::cerr << "[WARN] unable to reset current thread's CPU affinity" << std::endl;
 
     time_t delta_sec = _stop_count.tv_sec - _start_count.tv_sec;
@@ -132,7 +132,7 @@ double Timer<Units>::get_frequency()
 #if defined(_WIN32)
     LARGE_INTEGER freq;
 
-    if (!::QueryPerformanceFrequency(&freq))
+    if (!QueryPerformanceFrequency(&freq))
         throw std::runtime_error(
             "[ERROR] QueryPerformanceFrequency() failed; your platform may lack support.");
 
@@ -171,7 +171,7 @@ void Timer<Units>::print(std::ostream& os)
         default:
             time_unit = "??";
             break;
-    };
+    }
 
     os  << "Timer<"
         << this << ", "
