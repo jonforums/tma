@@ -7,7 +7,7 @@ A helper for timing native Windows or Linux API calls.
 * Python 2.7
 * A zip extraction utility such as [7-Zip](http://www.7-zip.org/) or a Git client such
   as [msysGit](http://code.google.com/p/msysgit/)
-* MinGW, VC++, or Windows SDK build environment
+* On Windows, a MinGW, VC++, or Windows SDK build environment
 * Live internet connection for one-time download of the [Waf](http://code.google.com/p/waf/)
   cross-platform build tool
 
@@ -39,7 +39,9 @@ A helper for timing native Windows or Linux API calls.
 ## Usage
 
 Include the `hrtimer.h` template header in your C++ exe or DLL and create a
-`HiRes::Timer<HiRes::TimeUnits>` instance. _Details coming_.
+`HiRes::Timer<HiRes::TimeUnits>` instance. See examples in `samples` dir.
+
+_Details coming_.
 
 ## License
 
@@ -47,8 +49,8 @@ Include the `hrtimer.h` template header in your C++ exe or DLL and create a
 
 ## TODO
 
+* fix `basic_stats.cpp` build failure when using Windows SDK
 * add Linux impl for thread priority boost
-* add Windows impl for `SetPriorityClass` -> `REALTIME_PRIORITY_CLASS`
 * add `median` to `Statistics` functor class template
 * add useful code comments and usage doco
 * isn't it well past time for http://sourceforge.net/projects/cpputest/files/
