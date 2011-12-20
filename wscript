@@ -3,7 +3,7 @@
 
 # Copyright (c) 2011, Jon Maken
 # License: 3-clause BSD
-# Revision: 12/18/2011 12:56:29 PM
+# Revision: 12/18/2011 10:33:14 PM
 
 import os
 import os.path
@@ -53,6 +53,8 @@ def build(bld):
     else:
         my_cxxflags = [ '-Wall', '-O3' ]
         my_linkflags = [ '-s' ]
+        if sys.platform != 'win32':
+            my_linkflags.append('-ldl')
         if bld.env.DEBUG:
             my_cxxflags.append('-g')
             my_linkflags.remove('-s')

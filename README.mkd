@@ -49,7 +49,6 @@ Include the `hrtimer.h` template header in your C++ exe or DLL and create a
 
 * add Linux impl for thread priority boost
 * add Windows impl for `SetPriorityClass` -> `REALTIME_PRIORITY_CLASS`
-* refactor into runner exe loading custom timing DLLs from the cmd line
 * add `median` to `Statistics` functor class template
 * add useful code comments and usage doco
 * isn't it well past time for http://sourceforge.net/projects/cpputest/files/

@@ -6,18 +6,21 @@ def build(bld):
 
     if bld.env.CXX_NAME == 'msvc':
         my_cxxflags = [ '/W1', '/O2', '/EHsc' ]
+        my_linkflags = []
+        my_dll_lflags = []
         if bld.env.DEBUG:
             my_cxxflags.append('/Zi')
-        my_linkflags = []
     else:
         my_cxxflags = [ '-Wall', '-O3' ]
         my_linkflags = [ '-s' ]
+        my_dll_lflags = []
         if bld.env.DEBUG:
             my_cxxflags.append('-g')
             my_linkflags.remove('-s')
 
     if sys.platform != 'win32':
         my_linkflags.append('-lrt')
+        my_dll_lflags.append('-lrt')
 
     bld.program(
         source = [ 'mem_alloc.cpp' ],
@@ -33,6 +36,14 @@ def build(bld):
         target = 'file_access',
         cxxflags = my_cxxflags,
         linkflags = my_linkflags,
+        )
+
+    bld.shlib(
+        source = [ 'stat_lib.cpp' ],
+        includes = [ '../include' ],
+        target = 'stat_lib',
+        cxxflags = my_cxxflags,
+        linkflags = my_dll_lflags,
         )
 
     # FIXME Windows SDK build errors
