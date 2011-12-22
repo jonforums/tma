@@ -49,7 +49,6 @@ _Details coming_.
 
 ## TODO
 
-* fix `basic_stats.cpp` build failure when using Windows SDK
 * add Linux impl for thread priority boost
 * add `median` to `Statistics` functor class template
 * add useful code comments and usage doco

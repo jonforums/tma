@@ -1,10 +1,16 @@
 /* Copyright (c) 2011, Jon Maken
  * License: 3-clause BSD
- * Revision: 12/09/2011 2:46:38 PM
+ * Revision: 12/21/2011 10:11:44 PM
  */
 
 #ifndef HIRES_STATISTICS_H_
 #define HIRES_STATISTICS_H_
+
+// XXX needed to prevent build failures on VC++/Windows SDK but not MinGW
+#if defined (_MSC_VER)
+#  undef min
+#  undef max
+#endif
 
 #include <cmath>
 #include <limits>
