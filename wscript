@@ -3,14 +3,14 @@
 
 # Copyright (c) 2011, Jon Maken
 # License: 3-clause BSD
-# Revision: 12/18/2011 10:33:14 PM
+# Revision: 2012-02-05 17:09:06Z
 
 import os
 import os.path
 import sys
 
 PY_MIN_VERSION = (2, 7, 0)
-WAF_VERSION = '1.6.10'
+WAF_VERSION = '1.6.11'
 
 APPNAME = 'tma'
 VERSION = '0.1.0'
